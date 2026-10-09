@@ -1,0 +1,18 @@
+{
+  "name": "rd-ledger",
+  "version": "0.1.0",
+  "description": "R&D tax-credit evidence from your git history: a tax year's commits grouped into components, who worked on what and when, and the commits that look like experimentation as candidate evidence, each traced to its commit, in a dated CSV and markdown pack for your accountant. Hours and amounts only from figures you supply. Runs npx --allow-git=root github:agentwares/rd-ledger locally; no account, no network, no LLM calls of its own. Evidence to review with your tax adviser; not tax advice.",
+  "author": {
+    "name": "agentwares",
+    "url": "https://github.com/agentwares"
+  },
+  "homepage": "https://agentwares.vercel.app/rd-credit",
+  "documentationUrl": "https://github.com/agentwares/rd-ledger#readme",
+  "repository": "https://github.com/agentwares/rd-ledger",
+  "privacyPolicyUrl": "https://agentwares.vercel.app/privacy",
+  "termsOfServiceUrl": "https://agentwares.vercel.app/terms",
+  "supportUrl": "https://agentwares.vercel.app/contact",
+  "license": "MIT",
+  "icon": "./.claude-plugin/icon.png",
+  "keywords": ["r&d-tax-credit", "form-6765", "section-41", "git", "evidence", "startup"]
+}

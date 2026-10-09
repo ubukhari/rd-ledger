@@ -1,0 +1,99 @@
+name: rd-ledger
+description: R&D tax-credit evidence from this repository's git history for a month or a year - components, people and the commits that look like experimentation, as a dated pack. Not tax advice.
+author: agentwares
+branding:
+  icon: book-open
+  color: orange
+
+# Runs the built CLI from this repository's committed dist/ on your own runner: no npm install, no
+# account, no network. It reads the checked-out repository with git; check it out with
+# fetch-depth: 0, or the history is cut short. Nothing is written to GitHub and nothing is sent
+# anywhere.
+inputs:
+  path:
+    description: The repository's folder, relative to the workspace. Default the workspace itself.
+    required: false
+    default: "."
+  month:
+    description: A month (2026-09), or previous for last month. Used when year, since and until are empty.
+    required: false
+    default: previous
+  year:
+    description: A calendar tax year (2026) instead of a month.
+    required: false
+    default: ""
+  since:
+    description: First day of a custom period, YYYY-MM-DD, instead of a month.
+    required: false
+    default: ""
+  until:
+    description: Last day of a custom period, YYYY-MM-DD.
+    required: false
+    default: ""
+  base:
+    description: The main branch work is merged into. Default the origin's default branch, else main or master.
+    required: false
+    default: ""
+  components:
+    description: Your own components, one per line, each Name=glob,glob (e.g. Route optimizer=apps/router/**).
+    required: false
+    default: ""
+
+outputs:
+  pack:
+    description: The folder holding evidence.md and the CSVs
+    value: ${{ steps.ledger.outputs.pack }}
+  evidence:
+    description: Path to evidence.md
+    value: ${{ steps.ledger.outputs.evidence }}
+  commits:
+    description: How many commits the period holds (merges apart)
+    value: ${{ steps.ledger.outputs.commits }}
+  candidates:
+    description: How many of them a rule marked as candidate evidence of experimentation
+    value: ${{ steps.ledger.outputs.candidates }}
+
+runs:
+  using: composite
+  steps:
+    - id: ledger
+      shell: bash
+      env:
+        RDL_PATH: ${{ inputs.path }}
+        RDL_MONTH: ${{ inputs.month }}
+        RDL_YEAR: ${{ inputs.year }}
+        RDL_SINCE: ${{ inputs.since }}
+        RDL_UNTIL: ${{ inputs.until }}
+        RDL_BASE: ${{ inputs.base }}
+        RDL_COMPONENTS: ${{ inputs.components }}
+      run: |
+        set +e
+        out="$RUNNER_TEMP/rd-ledger"
+        mkdir -p "$out"
+        args=("${RDL_PATH:-.}" --out "$out/pack" --json --quiet)
+        if [ -n "$RDL_YEAR$RDL_SINCE$RDL_UNTIL" ]; then
+          if [ -n "$RDL_YEAR" ]; then args+=(--year "$RDL_YEAR"); fi
+          if [ -n "$RDL_SINCE" ]; then args+=(--since "$RDL_SINCE"); fi
+          if [ -n "$RDL_UNTIL" ]; then args+=(--until "$RDL_UNTIL"); fi
+        else
+          args+=(--month "${RDL_MONTH:-previous}")
+        fi
+        if [ -n "$RDL_BASE" ]; then args+=(--base "$RDL_BASE"); fi
+        while IFS= read -r line; do
+          if [ -n "$line" ]; then args+=(--component "$line"); fi
+        done <<< "$RDL_COMPONENTS"
+        node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}" > "$out/report.json"
+        code=$?
+        if [ "$code" -ne 0 ]; then cat "$out/report.json"; exit "$code"; fi
+        OUT="$out" node --input-type=module -e '
+          import { readFileSync, appendFileSync } from "node:fs";
+          const out = process.env.OUT;
+          const report = JSON.parse(readFileSync(out + "/report.json", "utf8"));
+          const md = readFileSync(out + "/pack/evidence.md", "utf8");
+          // a step summary holds 1 MiB; the pack holds everything
+          const cap = 900000;
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY, md.length > cap ? md.slice(0, cap) + "\n\n(cut here; the whole pack is in " + out + "/pack)\n" : md);
+          const t = report.totals;
+          appendFileSync(process.env.GITHUB_OUTPUT, `pack=${out}/pack\nevidence=${out}/pack/evidence.md\ncommits=${t.commits}\ncandidates=${t.candidates}\n`);
+          process.stdout.write(`rd-ledger: ${report.repo.name}, ${report.period.since} to ${report.period.until}: ${t.commits} commits, ${t.candidates} candidate commits, ${t.people} people. ${report.note}\n${report.handoff.notBuilt}\n`);
+        '

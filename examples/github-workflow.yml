@@ -1,0 +1,33 @@
+# .github/workflows/rd-ledger.yml: on the 1st of each month, write last month's R&D evidence pack
+# from this repository's history (components, people, and the commits that look like
+# experimentation) and keep it as an artifact. A pack made each month, as the work happens, is a
+# record made at the time; one assembled at year end is not. Evidence to review with your tax
+# adviser; not tax advice.
+name: R&D evidence
+on:
+  schedule:
+    - cron: "17 6 1 * *"
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "A month (2026-09); empty for last month"
+        required: false
+permissions:
+  contents: read
+jobs:
+  ledger:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # the whole history, every branch: a shallow clone hides the evidence
+      - id: ledger
+        uses: agentwares/rd-ledger@main
+        with:
+          month: ${{ inputs.month || 'previous' }}
+      - uses: actions/upload-artifact@v6
+        with:
+          name: rd-ledger-${{ inputs.month || 'last-month' }}
+          path: ${{ steps.ledger.outputs.pack }}
+          # artifacts expire, so download each month's pack and keep it with your tax records
+          retention-days: 90

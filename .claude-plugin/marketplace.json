@@ -1,0 +1,17 @@
+{
+  "name": "rd-ledger",
+  "description": "rd-ledger, from inside Claude Code: R&D tax-credit evidence from a repository's git history on your machine, with components, people and time spans, and the commits that look like experimentation, each traced to its commit, in a dated pack for your accountant. Open source, local, no account, no LLM of its own. Evidence to review with your tax adviser; not tax advice.",
+  "owner": {
+    "name": "agentwares",
+    "url": "https://github.com/agentwares"
+  },
+  "plugins": [
+    {
+      "name": "rd-ledger",
+      "source": "./plugins/rd-ledger",
+      "description": "/rd-ledger:rd-ledger runs `npx -y --allow-git=root github:agentwares/rd-ledger` on a repository for a tax year and explains what its history shows: the components worked on, who worked on what and when, and the candidate evidence of experimentation (reverts, branches never merged, spikes, benchmarks, approaches abandoned), with hours and amounts only from figures you supply. Evidence to review with your tax adviser; not tax advice.",
+      "category": "productivity",
+      "tags": ["r&d-tax-credit", "form-6765", "section-41", "git", "evidence", "startup"]
+    }
+  ]
+}

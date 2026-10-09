@@ -1,0 +1,74 @@
+{
+  "name": "rd-ledger",
+  "version": "0.1.0",
+  "description": "R&D tax-credit evidence from your git history, on your machine: a tax year's commits grouped into components, who worked on what and when, and the commits that look like experimentation (reverts, unmerged branches, spikes, benchmarks, abandoned approaches) as candidate evidence, each traced to its commit, in a dated CSV and markdown pack for your accountant. Hours and amounts only from the figures you supply, never invented. Pull requests too with your own GitHub token. A CLI, a GitHub Action and a local MCP server. No account, no LLM. Evidence to review with your tax adviser; not tax advice.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "rd-ledger": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agentwares/rd-ledger.git"
+  },
+  "homepage": "https://agentwares.vercel.app/rd-credit",
+  "bugs": {
+    "url": "https://github.com/agentwares/rd-ledger/issues"
+  },
+  "keywords": [
+    "r&d-tax-credit",
+    "rd-tax-credit",
+    "research-credit",
+    "section-41",
+    "form-6765",
+    "qualified-research",
+    "tax",
+    "evidence",
+    "git",
+    "git-log",
+    "startup",
+    "mcp",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "record": "RD_LEDGER_WRITE=1 vitest run src/distribution",
+    "pretest": "pnpm run build:dist",
+    "pretypecheck": "pnpm run build:dist",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "build:dist": "tsup"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.4.1",
+    "eslint": "^10.9.1",
+    "prettier": "^3.9.6",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^4.1.11"
+  }
+}

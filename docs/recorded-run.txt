@@ -1,0 +1,38 @@
+$ npx --allow-git=root github:agentwares/rd-ledger demo --out rd-ledger-demo
+SYNTHETIC demo data: an invented company's repository and people, built in a temporary folder. Nothing here is anyone's real work.
+
+rd-ledger 0.1.0 · example-co/demo-app · 2026-01-01 to 2026-12-31
+Period: the calendar year 2026.
+Evidence to review with your tax adviser; not tax advice.
+
+  19 commits across 6 components by 3 people and 1 automation account, plus 1 merge commit
+  10 candidate commits · 6 likely routine · 3 with an AI co-author · 1 branch never merged
+
+  Component     Commits  Candidates  People  First       Last
+  apps/router         9           7       3  2026-01-05  2026-07-03
+  (root files)        4           0       1  2026-01-05  2026-07-20
+  packages/geo        4           3       3  2026-01-05  2026-09-01
+  apps/web            3           0       2  2026-01-05  2026-05-07
+  .github             2           0       1  2026-01-05  2026-08-04
+  docs                1           0       1  2026-09-15  2026-09-15
+
+  Candidates by rule: revert 1, reverted 1, unmerged 2, spike-branch 2, experiment-words 3, approach-words 4, failed-words 1, rewrite 1
+
+  Person         Commits  Active days  First       Last        Candidates  Figures (yours)
+  Ada Example          8            8  2026-01-13  2026-09-15           7  1,450 h at 95.00/h
+  Grace Example        5            5  2026-03-02  2026-07-03           3  wages 148,000.00
+  Linus Example        5            5  2026-01-05  2026-08-04           0  -
+
+  Wrote ./rd-ledger-demo/: evidence.md, commits.csv, candidates.csv, components.csv, people.csv, allocation.csv
+
+A year-round R&D evidence ledger, kept month by month as the work happens, is not built.
+If you want it: https://agentwares.vercel.app/rd-credit/waitlist/cli
+(exit 0)
+
+$ ls rd-ledger-demo
+allocation.csv
+candidates.csv
+commits.csv
+components.csv
+evidence.md
+people.csv
